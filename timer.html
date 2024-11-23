@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritik's Timer</title>
+    <style>
+        /* Base styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2e3a47;
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            background-color: #1a252f;
+            padding: 20px;
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ddd;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #00796b;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: white;
+            text-align: center;
+        }
+
+        /* Timer Section */
+        .timer-section {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        #startButton, #stopButton, #resetButton, #startBreakButton, #stopBreakButton {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Break Timer Styling */
+        #breakTimerDisplay {
+            font-size: 20px;
+            color: #ffd700;
+        }
+
+        /* Task Section */
+        .task-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .task-input {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        .task-button {
+            padding: 10px 20px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-list {
+            margin-top: 20px;
+            width: 80%;
+        }
+
+        .task-item {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-checkbox {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar for links -->
+    <div class="sidebar">
+        <h2>Ritik's Timer</h2>
+        <a href="https://www.google.com" target="_blank">Google</a>
+        <a href="https://www.perplexity.ai/" target="_blank">Perplexcity</a>
+        <a href="https://chat.openai.com" target="_blank">ChatGPT</a>
+        <a href="https://www.youtube.com" target="_blank">YouTube</a>
+        <a href="https://calendar.google.com" target="_blank">Calendar</a>
+        <a href="https://www.coursera.org/programs/the-akanksha-foundation-on-demand-learning-program-zowzp" target="_blank">Coursera</a>
+        <a href="https://www.udemy.com" target="_blank">Udemy</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+        <h2>Focus Timer</h2>
+
+        <!-- Timer Section (Up) -->
+        <div class="timer-section">
+            <h3 id="timerDisplay">00:00</h3>
+            <button id="startButton">Start Timer</button>
+            <button id="stopButton">Stop Timer</button>
+            <button id="resetButton">Reset Timer</button>
+
+            <h3>Break Timer</h3>
+            <p id="breakTimerDisplay">Break: 00:00</p>
+            <button id="startBreakButton">Start Break</button>
+            <button id="stopBreakButton">Stop Break</button>
+        </div>
+
+        <!-- Task Section (Down) -->
+        <div class="task-section">
+            <input type="text" id="taskInput" class="task-input" placeholder="Enter task name">
+            <button id="addTaskButton" class="task-button">Add Task</button>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list" id="taskList"></div>
+    </div>
+
+    <script>
+        // Timer logic
+        let timer;
+        let breakTimer;
+        let minutes = 0;
+        let seconds = 0;
+        let breakMinutes = 0;
+        let breakSeconds = 0;
+        let isRunning = false;
+        let isBreakRunning = false;
+
+        // Start Focus Timer
+        document.getElementById("startButton").addEventListener("click", function() {
+            if (!isRunning) {
+                isRunning = true;
+                timer = setInterval(function() {
+                    seconds++;
+                    if (seconds === 60) {
+                        seconds = 0;
+                        minutes++;
+                    }
+                    document.getElementById("timerDisplay").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }, 1000);
+            }
+        });
+
+        // Stop Focus Timer
+        document.getElementById("stopButton").addEventListener("click", function() {
+            isRunning = false;
+            clearInterval(timer);
+        });
+
+        // Reset Focus Timer
+        document.getElementById("resetButton").addEventListener("click", function() {
+            isRunning = false;
+            clearInterval(timer);
+            minutes = 0;
+            seconds = 0;
+            document.getElementById("timerDisplay").textContent = "00:00";
+        });
+
+        // Start Break Timer
+        document.getElementById("startBreakButton").addEventListener("click", function() {
+            if (!isBreakRunning) {
+                isBreakRunning = true;
+                breakTimer = setInterval(function() {
+                    breakSeconds++;
+                    if (breakSeconds === 60) {
+                        breakSeconds = 0;
+                        breakMinutes++;
+                    }
+                    document.getElementById("breakTimerDisplay").textContent = `Break: ${String(breakMinutes).padStart(2, '0')}:${String(breakSeconds).padStart(2, '0')}`;
+                }, 1000);
+            }
+        });
+
+        // Stop Break Timer
+        document.getElementById("stopBreakButton").addEventListener("click", function() {
+            isBreakRunning = false;
+            clearInterval(breakTimer);
+        });
+
+        // Task logic
+        function addTask() {
+            const taskInput = document.getElementById("taskInput");
+            const taskName = taskInput.value.trim();
+
+            if (taskName !== "") {
+                // Create task div
+                const taskDiv = document.createElement("div");
+                taskDiv.classList.add("task-item");
+
+                // Add task name
+                const taskText = document.createElement("span");
+                taskText.textContent = taskName;
+                taskDiv.appendChild(taskText);
+
+                // Create checkbox and add event listener
+                const taskCheckbox = document.createElement("input");
+                taskCheckbox.type = "checkbox";
+                taskCheckbox.classList.add("task-checkbox");
+                taskCheckbox.addEventListener("change", () => {
+                    // Remove the task from the list when checked
+                    if (taskCheckbox.checked) {
+                        taskDiv.style.display = "none";  // Hides the task once completed
+                    }
+                });
+
+                taskDiv.appendChild(taskCheckbox);
+                document.getElementById("taskList").appendChild(taskDiv);
+
+                // Clear the input field
+                taskInput.value = "";
+            }
+        }
+
+        // Event listener for the "Add Task" button
+        document.getElementById("addTaskButton").addEventListener("click", addTask);
+    </script>
+
+</body>
+</html>
