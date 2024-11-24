@@ -22,8 +22,13 @@
             height: 100vh;
             position: fixed;
             top: 0;
-            left: 0;
+            left: -250px;
             z-index: 10;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar.open {
+            left: 0;
         }
 
         .sidebar h2 {
@@ -45,27 +50,36 @@
             background-color: #00796b;
         }
 
+        .toggle-sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 20;
+        }
+
         .content {
-            margin-left: 270px;
+            margin-left: 20px;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
 
         h2 {
             color: white;
-            text-align: center;
         }
 
-        /* Timer Section */
         .timer-section {
             margin-top: 40px;
             text-align: center;
             font-size: 24px;
         }
 
-        #startButton, #stopButton, #resetButton, #startBreakButton, #stopBreakButton {
+        #startButton, #stopButton, #resetButton {
             margin: 10px;
             padding: 10px 20px;
             background-color: #00796b;
@@ -75,13 +89,15 @@
             cursor: pointer;
         }
 
-        /* Break Timer Styling */
-        #breakTimerDisplay {
-            font-size: 20px;
-            color: #ffd700;
+        #timeInput {
+            margin-top: 20px;
+            padding: 10px;
+            width: 150px;
+            text-align: center;
+            border-radius: 5px;
+            border: none;
         }
 
-        /* Task Section */
         .task-section {
             margin-top: 40px;
             display: flex;
@@ -107,6 +123,8 @@
         .task-list {
             margin-top: 20px;
             width: 80%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .task-item {
@@ -119,152 +137,129 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .task-checkbox {
-            margin-left: 10px;
-        }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar for links -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <h2>Ritik's Timer</h2>
-        <a href="https://www.google.com" target="_blank">Google</a>
-        <a href="https://www.perplexity.ai/" target="_blank">Perplexcity</a>
+         <a href="https://www.google.com" target="_blank">Google</a>
+        <a href="https://www.perplexcity.com" target="_blank">Perplexcity</a>
         <a href="https://chat.openai.com" target="_blank">ChatGPT</a>
         <a href="https://www.youtube.com" target="_blank">YouTube</a>
         <a href="https://calendar.google.com" target="_blank">Calendar</a>
-        <a href="https://www.coursera.org/programs/the-akanksha-foundation-on-demand-learning-program-zowzp" target="_blank">Coursera</a>
+        <a href="https://www.coursera.org" target="_blank">Coursera</a>
         <a href="https://www.udemy.com" target="_blank">Udemy</a>
     </div>
+    <button class="toggle-sidebar" id="toggleSidebar">☰</button>
 
-    <!-- Main content -->
     <div class="content">
         <h2>Focus Timer</h2>
 
-        <!-- Timer Section (Up) -->
         <div class="timer-section">
+            <input type="number" id="timeInput" placeholder="Enter minutes">
             <h3 id="timerDisplay">00:00</h3>
             <button id="startButton">Start Timer</button>
             <button id="stopButton">Stop Timer</button>
             <button id="resetButton">Reset Timer</button>
-
-            <h3>Break Timer</h3>
-            <p id="breakTimerDisplay">Break: 00:00</p>
-            <button id="startBreakButton">Start Break</button>
-            <button id="stopBreakButton">Stop Break</button>
         </div>
 
-        <!-- Task Section (Down) -->
         <div class="task-section">
             <input type="text" id="taskInput" class="task-input" placeholder="Enter task name">
             <button id="addTaskButton" class="task-button">Add Task</button>
         </div>
 
-        <!-- Task List -->
         <div class="task-list" id="taskList"></div>
     </div>
 
     <script>
-        // Timer logic
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const content = document.querySelector('.content');
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            content.style.marginLeft = sidebar.classList.contains('open') ? '250px' : '20px';
+        });
+
+        const timerSound = new Audio('timer-sound.wav');
         let timer;
-        let breakTimer;
-        let minutes = 0;
-        let seconds = 0;
-        let breakMinutes = 0;
-        let breakSeconds = 0;
         let isRunning = false;
-        let isBreakRunning = false;
 
-        // Start Focus Timer
-        document.getElementById("startButton").addEventListener("click", function() {
-            if (!isRunning) {
-                isRunning = true;
-                timer = setInterval(function() {
-                    seconds++;
-                    if (seconds === 60) {
-                        seconds = 0;
-                        minutes++;
-                    }
-                    document.getElementById("timerDisplay").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                }, 1000);
+        document.getElementById('startButton').addEventListener('click', () => {
+            if (isRunning) return;
+
+            const inputMinutes = parseInt(document.getElementById('timeInput').value);
+            if (isNaN(inputMinutes) || inputMinutes <= 0) {
+                alert('Please enter a valid number of minutes.');
+                return;
             }
+
+            let totalTime = inputMinutes * 60;
+            isRunning = true;
+
+            timer = setInterval(() => {
+                const minutes = Math.floor(totalTime / 60);
+                const seconds = totalTime % 60;
+                document.getElementById('timerDisplay').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (totalTime === 0) {
+                    clearInterval(timer);
+                    isRunning = false;
+
+                    if (Notification.permission === 'granted') {
+                        new Notification('Time is up!', {
+                            body: 'Your focus time is over.',
+                        });
+                    }
+
+                    timerSound.play();
+                } else {
+                    totalTime--;
+                }
+            }, 1000);
         });
 
-        // Stop Focus Timer
-        document.getElementById("stopButton").addEventListener("click", function() {
+        document.getElementById('stopButton').addEventListener('click', () => {
             isRunning = false;
             clearInterval(timer);
         });
 
-        // Reset Focus Timer
-        document.getElementById("resetButton").addEventListener("click", function() {
+        document.getElementById('resetButton').addEventListener('click', () => {
             isRunning = false;
             clearInterval(timer);
-            minutes = 0;
-            seconds = 0;
-            document.getElementById("timerDisplay").textContent = "00:00";
+            document.getElementById('timerDisplay').textContent = '00:00';
         });
 
-        // Start Break Timer
-        document.getElementById("startBreakButton").addEventListener("click", function() {
-            if (!isBreakRunning) {
-                isBreakRunning = true;
-                breakTimer = setInterval(function() {
-                    breakSeconds++;
-                    if (breakSeconds === 60) {
-                        breakSeconds = 0;
-                        breakMinutes++;
-                    }
-                    document.getElementById("breakTimerDisplay").textContent = `Break: ${String(breakMinutes).padStart(2, '0')}:${String(breakSeconds).padStart(2, '0')}`;
-                }, 1000);
-            }
-        });
-
-        // Stop Break Timer
-        document.getElementById("stopBreakButton").addEventListener("click", function() {
-            isBreakRunning = false;
-            clearInterval(breakTimer);
-        });
-
-        // Task logic
-        function addTask() {
-            const taskInput = document.getElementById("taskInput");
+        document.getElementById('addTaskButton').addEventListener('click', () => {
+            const taskInput = document.getElementById('taskInput');
             const taskName = taskInput.value.trim();
 
-            if (taskName !== "") {
-                // Create task div
-                const taskDiv = document.createElement("div");
-                taskDiv.classList.add("task-item");
+            if (taskName) {
+                const taskDiv = document.createElement('div');
+                taskDiv.classList.add('task-item');
 
-                // Add task name
-                const taskText = document.createElement("span");
+                const taskText = document.createElement('span');
                 taskText.textContent = taskName;
-                taskDiv.appendChild(taskText);
 
-                // Create checkbox and add event listener
-                const taskCheckbox = document.createElement("input");
-                taskCheckbox.type = "checkbox";
-                taskCheckbox.classList.add("task-checkbox");
-                taskCheckbox.addEventListener("change", () => {
-                    // Remove the task from the list when checked
+                const taskCheckbox = document.createElement('input');
+                taskCheckbox.type = 'checkbox';
+                taskCheckbox.addEventListener('change', () => {
                     if (taskCheckbox.checked) {
-                        taskDiv.style.display = "none";  // Hides the task once completed
+                        taskDiv.remove();
                     }
                 });
 
+                taskDiv.appendChild(taskText);
                 taskDiv.appendChild(taskCheckbox);
-                document.getElementById("taskList").appendChild(taskDiv);
 
-                // Clear the input field
-                taskInput.value = "";
+                document.getElementById('taskList').appendChild(taskDiv);
+                taskInput.value = '';
             }
-        }
-
-        // Event listener for the "Add Task" button
-        document.getElementById("addTaskButton").addEventListener("click", addTask);
+        });
     </script>
-
 </body>
 </html>
