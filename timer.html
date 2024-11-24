@@ -13,6 +13,12 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light-theme {
+            background-color: #f4f4f4;
+            color: black;
         }
 
         .sidebar {
@@ -36,18 +42,38 @@
             margin-bottom: 20px;
         }
 
-        .sidebar a {
+        .sidebar .section {
+            margin-bottom: 10px;
+        }
+
+        .sidebar .section h3 {
+            color: #ffffff;
+            font-size: 18px;
+            margin: 0;
+            padding: 10px;
+            background-color: #00796b;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sidebar .section .links {
+            margin-top: 5px;
+            display: none;
+            padding-left: 10px;
+        }
+
+        .sidebar .section .links a {
             display: block;
             color: #ddd;
             text-decoration: none;
-            padding: 10px;
+            padding: 8px 10px;
             margin: 5px 0;
             border-radius: 5px;
             transition: background-color 0.3s;
         }
 
-        .sidebar a:hover {
-            background-color: #00796b;
+        .sidebar .section .links a:hover {
+            background-color: #009688;
         }
 
         .toggle-sidebar {
@@ -69,197 +95,256 @@
             text-align: center;
         }
 
-        h2 {
-            color: white;
+        /* Timer Section */
+        .timer-section {
+            margin-top: 20px;
         }
 
-        .timer-section {
-            margin-top: 40px;
-            text-align: center;
+        .timer-section button {
+            padding: 10px 20px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .timer-section button:hover {
+            background-color: #009688;
+        }
+
+        .timer-section .timer {
+            margin-top: 20px;
             font-size: 24px;
         }
 
-        #startButton, #stopButton, #resetButton {
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: #00796b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #timeInput {
-            margin-top: 20px;
+        .timer-section input {
+            margin: 10px 5px;
             padding: 10px;
-            width: 150px;
+            width: 50px;
+            font-size: 16px;
             text-align: center;
-            border-radius: 5px;
-            border: none;
         }
 
-        .task-section {
-            margin-top: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .task-input {
-            padding: 10px;
-            width: 200px;
-            margin-right: 10px;
-        }
-
-        .task-button {
-            padding: 10px 20px;
-            background-color: #00796b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .task-list {
+        /* To-Do List */
+        .todo-section {
             margin-top: 20px;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        .task-item {
-            background-color: #333;
-            color: white;
+        .todo-section input, .todo-section button {
             padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .todo-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 5px 0;
         }
+
+        .todo-item input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .quote-section {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        /* Theme Toggle Button */
+        .theme-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .theme-button:hover {
+            background-color: #009688;
+        }
+
     </style>
 </head>
 <body>
+
     <div class="sidebar" id="sidebar">
         <h2>Ritik's Timer</h2>
-         <a href="https://www.google.com" target="_blank">Google</a>
-        <a href="https://www.perplexcity.com" target="_blank">Perplexcity</a>
-        <a href="https://chat.openai.com" target="_blank">ChatGPT</a>
-        <a href="https://www.youtube.com" target="_blank">YouTube</a>
-        <a href="https://calendar.google.com" target="_blank">Calendar</a>
-        <a href="https://www.coursera.org" target="_blank">Coursera</a>
-        <a href="https://www.udemy.com" target="_blank">Udemy</a>
+        <div class="section">
+            <h3 onclick="toggleLinks(this)">1. Productivity</h3>
+            <div class="links">
+                <a href="https://chat.openai.com" target="_blank">a. ChatGPT</a>
+                <a href="https://www.youtube.com" target="_blank">b. YouTube</a>
+                <a href="https://www.google.com" target="_blank">c. Google</a>
+                <a href="https://www.perplexcity.com" target="_blank">d. Perplexity</a>
+                <a href="https://calendar.google.com" target="_blank">e. Calendar</a>
+            </div>
+        </div>
+        <div class="section">
+            <h3 onclick="toggleLinks(this)">2. Studying</h3>
+            <div class="links">
+                <a href="https://www.coursera.org" target="_blank">a. Coursera</a>
+                <a href="https://www.udemy.com" target="_blank">b. Udemy</a>
+                <a href="https://drive.google.com" target="_blank">c. Google Drive</a>
+            </div>
+        </div>
+        <div class="section">
+            <h3 onclick="toggleLinks(this)">3. News</h3>
+            <div class="links">
+                <a href="https://www.moneycontrol.com" target="_blank">a. Moneycontrol</a>
+                <a href="https://www.reuters.com" target="_blank">b. Reuters</a>
+                <a href="https://finance.yahoo.com" target="_blank">c. Yahoo Finance</a>
+            </div>
+        </div>
+        <div class="section">
+            <h3 onclick="toggleLinks(this)">4. Reading & Others</h3>
+            <div class="links">
+                <a href="https://www.thefactsite.com/#:~:text=The%20Fact%20Site%20is%20the%20%231%20source%20for,about%20animals%2C%20celebs%2C%20food%2C%20history%2C%20space%2C%20and%20more%21" target="_blank">
+                    a. Fun Fact Site
+                </a>
+                <a href="#" target="_blank">b. Other (To be added)</a>
+            </div>
+        </div>
+        <div class="section">
+            <h3 onclick="toggleLinks(this)">5. Entertainment</h3>
+            <div class="links">
+                <a href="https://www.netflix.com" target="_blank">a. Netflix</a>
+                <a href="https://www.primevideo.com" target="_blank">b. Amazon Prime</a>
+                <a href="https://www.hotstar.com" target="_blank">c. Hotstar</a>
+            </div>
+        </div>
     </div>
+
     <button class="toggle-sidebar" id="toggleSidebar">☰</button>
 
     <div class="content">
         <h2>Focus Timer</h2>
 
+        <!-- Timer Section -->
         <div class="timer-section">
-            <input type="number" id="timeInput" placeholder="Enter minutes">
-            <h3 id="timerDisplay">00:00</h3>
-            <button id="startButton">Start Timer</button>
-            <button id="stopButton">Stop Timer</button>
-            <button id="resetButton">Reset Timer</button>
+            <h3>Set your work and break durations:</h3>
+            <label for="workMinutes">Work Time (min): </label>
+            <input type="number" id="workMinutes" value="25" min="1" step="1">
+            <label for="breakMinutes">Break Time (min): </label>
+            <input type="number" id="breakMinutes" value="5" min="1" step="1">
+            <button onclick="startTimer()">Start Work</button>
+            <div class="timer" id="timer">00:00</div>
         </div>
 
-        <div class="task-section">
-            <input type="text" id="taskInput" class="task-input" placeholder="Enter task name">
-            <button id="addTaskButton" class="task-button">Add Task</button>
+        <!-- To-Do List Section -->
+        <div class="todo-section">
+            <h3>To-Do List</h3>
+            <input type="text" id="todoInput" placeholder="Enter task">
+            <button onclick="addToDo()">Add</button>
+            <div id="todoList"></div>
         </div>
 
-        <div class="task-list" id="taskList"></div>
+        <!-- Motivational Quotes Section -->
+        <div class="quote-section">
+            <h3>Daily Motivational Quote</h3>
+            <p id="quote">"Believe you can and you're halfway there." – Theodore Roosevelt</p>
+        </div>
+
     </div>
 
-    <script>
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission();
-        }
+    <button class="theme-button" onclick="toggleTheme()">🌙</button>
 
+    <script>
         const sidebar = document.getElementById('sidebar');
         const toggleSidebar = document.getElementById('toggleSidebar');
-        const content = document.querySelector('.content');
+        const timerElement = document.getElementById('timer');
+        const quoteElement = document.getElementById('quote');
+        const todoList = document.getElementById('todoList');
+        let minutes = 25;
+        let seconds = 0;
+        let breakMinutes = 5;
 
         toggleSidebar.addEventListener('click', () => {
             sidebar.classList.toggle('open');
-            content.style.marginLeft = sidebar.classList.contains('open') ? '250px' : '20px';
         });
 
-        const timerSound = new Audio('timer-sound.wav');
-        let timer;
-        let isRunning = false;
-
-        document.getElementById('startButton').addEventListener('click', () => {
-            if (isRunning) return;
-
-            const inputMinutes = parseInt(document.getElementById('timeInput').value);
-            if (isNaN(inputMinutes) || inputMinutes <= 0) {
-                alert('Please enter a valid number of minutes.');
-                return;
+        function toggleLinks(section) {
+            const links = section.nextElementSibling;
+            if (links.style.display === 'block') {
+                links.style.display = 'none';
+            } else {
+                links.style.display = 'block';
             }
+        }
 
-            let totalTime = inputMinutes * 60;
-            isRunning = true;
+        function startTimer() {
+            minutes = parseInt(document.getElementById('workMinutes').value);
+            breakMinutes = parseInt(document.getElementById('breakMinutes').value);
 
-            timer = setInterval(() => {
-                const minutes = Math.floor(totalTime / 60);
-                const seconds = totalTime % 60;
-                document.getElementById('timerDisplay').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-                if (totalTime === 0) {
-                    clearInterval(timer);
-                    isRunning = false;
-
-                    if (Notification.permission === 'granted') {
-                        new Notification('Time is up!', {
-                            body: 'Your focus time is over.',
-                        });
-                    }
-
-                    timerSound.play();
+            const workInterval = setInterval(() => {
+                if (seconds === 0 && minutes === 0) {
+                    clearInterval(workInterval);
+                    alert('Take a break!');
+                    minutes = breakMinutes;
+                    seconds = 0;
+                    startTimer();
+                } else if (seconds === 0) {
+                    minutes--;
+                    seconds = 59;
                 } else {
-                    totalTime--;
+                    seconds--;
                 }
+                timerElement.textContent = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
             }, 1000);
-        });
+        }
 
-        document.getElementById('stopButton').addEventListener('click', () => {
-            isRunning = false;
-            clearInterval(timer);
-        });
-
-        document.getElementById('resetButton').addEventListener('click', () => {
-            isRunning = false;
-            clearInterval(timer);
-            document.getElementById('timerDisplay').textContent = '00:00';
-        });
-
-        document.getElementById('addTaskButton').addEventListener('click', () => {
-            const taskInput = document.getElementById('taskInput');
-            const taskName = taskInput.value.trim();
-
-            if (taskName) {
-                const taskDiv = document.createElement('div');
-                taskDiv.classList.add('task-item');
-
-                const taskText = document.createElement('span');
-                taskText.textContent = taskName;
-
-                const taskCheckbox = document.createElement('input');
-                taskCheckbox.type = 'checkbox';
-                taskCheckbox.addEventListener('change', () => {
-                    if (taskCheckbox.checked) {
-                        taskDiv.remove();
-                    }
-                });
-
-                taskDiv.appendChild(taskText);
-                taskDiv.appendChild(taskCheckbox);
-
-                document.getElementById('taskList').appendChild(taskDiv);
-                taskInput.value = '';
+        function addToDo() {
+            const input = document.getElementById('todoInput');
+            const newToDo = input.value.trim();
+            if (newToDo) {
+                const todoItem = document.createElement('div');
+                todoItem.classList.add('todo-item');
+                todoItem.innerHTML = `
+                    <span>${newToDo}</span>
+                    <input type="checkbox" onclick="completeTask(this)">
+                `;
+                todoList.appendChild(todoItem);
+                input.value = '';
             }
-        });
+        }
+
+        function completeTask(checkbox) {
+            if (checkbox.checked) {
+                checkbox.parentElement.style.display = 'none';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const currentTheme = document.body.classList.contains('light-theme') ? '🌙' : '☀️';
+            document.querySelector('.theme-button').textContent = currentTheme;
+        }
+
+        // Daily Quotes
+        const quotes = [
+            "Believe you can and you're halfway there. – Theodore Roosevelt",
+            "The only way to do great work is to love what you do. – Steve Jobs",
+            "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
+            "Act as if what you do makes a difference. It does. – William James",
+            "Success is not final, failure is not fatal: It is the courage to continue that counts. – Winston Churchill"
+	
+        ];
+
+        function getRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            quoteElement.textContent = quotes[randomIndex];
+        }
+
+        getRandomQuote();
     </script>
+
 </body>
 </html>
